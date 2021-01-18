@@ -1,1 +1,1 @@
-package gov.naco.soch.lfu.qmsrepository;
+package gov.naco.soch.lfu.lfurepository;

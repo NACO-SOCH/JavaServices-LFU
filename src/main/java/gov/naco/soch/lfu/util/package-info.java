@@ -7,4 +7,4 @@
  * @date 2020-Nov-09 09:09:09 am 
  * 
  */
-package gov.naco.soch.lfu.utils;
+package gov.naco.soch.lfu.util;
