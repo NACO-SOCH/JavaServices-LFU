@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages={"gov.naco.soch.lfu.qmsrepository"})
+@EnableJpaRepositories(basePackages={"gov.naco.soch.lfu.lfurepository"})
 @EnableAsync
 @EntityScan(basePackages={"gov.naco.soch.lfu.domains"})
 @ComponentScan(basePackages = { "gov.naco.soch" })
