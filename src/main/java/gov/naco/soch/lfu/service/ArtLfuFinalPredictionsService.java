@@ -2,7 +2,6 @@ package gov.naco.soch.lfu.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +22,7 @@ import gov.naco.soch.lfu.dto.ArtLfuFinalPredictionResponseDto;
 import gov.naco.soch.lfu.dto.LoginResponseDto;
 import gov.naco.soch.lfu.lfurepository.ArtLfuFinalPredictionsRepository;
 import gov.naco.soch.lfu.projection.ArtLfuFinalPredictionProjection;
+import gov.naco.soch.lfu.projection.ArtLfuPredictionDateProjection;
 import gov.naco.soch.lfu.util.UserUtils;
 
 //import gov.naco.soch.cst.dto.ArtLfuFinalPredictionDto;
@@ -61,19 +61,29 @@ public class ArtLfuFinalPredictionsService {
 		List<ArtLfuFinalPredictionDto> artLfuFinalPredictionDtoList = new ArrayList<ArtLfuFinalPredictionDto>();
 		Page<ArtLfuFinalPredictionProjection> artLfuFinalPredictionProjection = null;
 		List<ArtLfuFinalPredictionProjection> artLfuFinalPredictionProjectionList = new ArrayList<ArtLfuFinalPredictionProjection>();
+		List<ArtLfuPredictionDateProjection> artLfuFinalPredictionDateProjections = new ArrayList<ArtLfuPredictionDateProjection>();
 		Optional<List> predictionListOptional =null;
 		Long actualCount =null;
 		LoginResponseDto currentUser = UserUtils.getLoggedInUserDetails();
 		Long facilityId = currentUser.getFacilityId();
-		
-		if (fromDate != null && toDate != null) {
-			artLfuFinalPredictionProjection = artLfuFinalPredictionsRepository.findLfuBenficiaryListWithDate(facilityId,fromDate,toDate, pageable);
-		} else {
-			fromDate = LocalDate.now();
-			toDate = LocalDate.now().plusDays(7);
-			artLfuFinalPredictionProjection = artLfuFinalPredictionsRepository.findLfuBenficiaryListWithDate(facilityId,fromDate,toDate, pageable);
+		artLfuFinalPredictionDateProjections = artLfuFinalPredictionsRepository.findPredictionDate();
+		if(!CollectionUtils.isEmpty(artLfuFinalPredictionDateProjections)) {
+			artLfuFinalPredictionDateProjections.forEach(row ->{
+				artLfuFinalPredictionResponseDto.setPredictionFromDate(row.getPredictionFromDate());
+				artLfuFinalPredictionResponseDto.setPredictionToDate(row.getPredictionToDate());
+			});
 		}
-		actualCount=artLfuFinalPredictionsRepository.getActualCountLfuPredictionList(facilityId,fromDate,toDate);
+		if (fromDate != null && toDate != null) {
+			artLfuFinalPredictionProjection = artLfuFinalPredictionsRepository.findLfuBenficiaryListWithAppointmentDate(artLfuFinalPredictionResponseDto.getPredictionFromDate(),artLfuFinalPredictionResponseDto.getPredictionToDate(),facilityId,fromDate,toDate, pageable);
+			actualCount=artLfuFinalPredictionsRepository.getActualCountLfuPredictionListWithAppointmentDate(artLfuFinalPredictionResponseDto.getPredictionFromDate(),artLfuFinalPredictionResponseDto.getPredictionToDate(),facilityId,fromDate,toDate);
+		
+		} else {
+		/*	fromDate = LocalDate.now();
+			toDate = LocalDate.now().plusDays(7);*/
+			artLfuFinalPredictionProjection = artLfuFinalPredictionsRepository.findLfuBenficiaryListWithoutAppointmentDate(artLfuFinalPredictionResponseDto.getPredictionFromDate(),artLfuFinalPredictionResponseDto.getPredictionToDate(),facilityId,pageable);
+			actualCount=artLfuFinalPredictionsRepository.getActualCountLfuPredictionListWithoutAppointmentDate(artLfuFinalPredictionResponseDto.getPredictionFromDate(),artLfuFinalPredictionResponseDto.getPredictionToDate(),facilityId);
+		}
+		
 
 		predictionListOptional =  Optional.ofNullable(artLfuFinalPredictionProjection.getContent());
 		if(predictionListOptional!=null && predictionListOptional.isPresent()) {

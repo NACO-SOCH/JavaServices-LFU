@@ -41,5 +41,4 @@ public interface ArtLfuFinalPredictionProjection {
 	void setNextAppointmentDate(LocalDate nextAppointmentDate);
 	
 	
-	
 }
