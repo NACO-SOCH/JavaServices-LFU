@@ -15,9 +15,12 @@ spring:
    datasource:
        type: com.zaxxer.hikari.HikariDataSource
        #dataSourceClassName: org.postgresql.Driver
-       url: jdbc:postgresql://localhost:3307/uat_migdb_ml?currentSchema=sochml
-       username: sochdb_uat
-       password: aiv9echI
+       url: jdbc:postgresql://10.25.69.25:5432/soch_stag_mask_db?currentSchema=soch
+       username: soch_stag_app_user
+       password: SochApp@2020
+       #url: jdbc:postgresql://localhost:3307/uat_migdb_ml?currentSchema=sochml
+       #username: sochdb_uat
+       #password: aiv9echI
        hikari:
         poolName: Hikari
 logging:
